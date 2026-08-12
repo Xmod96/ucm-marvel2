@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mi UCM · Lista de Marvel</title>
+<style>
+:root{--bg:#090b10;--panel:#11151d;--panel2:#171c26;--text:#f5f7fb;--muted:#a8b0bf;--accent:#e62429;--accent2:#8b5cf6;--line:#252c38}
+*{box-sizing:border-box} body{margin:0;background:linear-gradient(180deg,#07080c,#0c1018 55%,#080a0f);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:42px 22px 28px;max-width:1250px;margin:auto}
+h1{font-size:clamp(32px,6vw,58px);margin:0 0 8px;letter-spacing:-1.5px}
+.subtitle{color:var(--muted);margin:0 0 24px}
+.progress-wrap{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:18px}
+.progress-top{display:flex;justify-content:space-between;gap:12px;margin-bottom:10px;font-weight:700}
+.bar{height:10px;background:#252a34;border-radius:99px;overflow:hidden}.bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),#ff6b6f);transition:.25s}
+main{max-width:1250px;margin:auto;padding:0 22px 50px}
+.controls{position:sticky;top:0;z-index:5;background:rgba(9,11,16,.9);backdrop-filter:blur(14px);padding:14px 0;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:10px}
+input,select,button{font:inherit;color:var(--text);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 13px}
+input{flex:1;min-width:210px}button{cursor:pointer}button.active{background:var(--accent);border-color:var(--accent)}
+.saga{margin:34px 0 12px}.saga h2{margin:0;font-size:28px}.saga p{color:var(--muted);margin:5px 0 0}
+.phase{margin-top:28px}.phase h3{font-size:20px;margin:0 0 14px;color:#ddd}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;position:relative;transition:.2s;display:flex;flex-direction:column}
+.card:hover{transform:translateY(-3px);border-color:#394353}
+.poster{width:100%;aspect-ratio:2/3;object-fit:cover;background:#1a1f28}
+.body{padding:12px}.num{font-size:12px;color:var(--muted)}.title{font-weight:750;margin:4px 0 8px;line-height:1.2}.meta{font-size:12px;color:var(--muted)}
+.check{display:flex;align-items:center;gap:7px;margin-top:11px;font-size:13px}.check input{min-width:0;flex:none;width:18px;height:18px}
+.optional{display:inline-block;font-size:11px;margin-top:8px;padding:4px 7px;border-radius:7px;background:#2a2230;color:#f0b8f7}
+.empty{padding:30px;text-align:center;color:var(--muted)}
+footer{max-width:1250px;margin:auto;padding:20px 22px 50px;color:var(--muted);font-size:12px}
+footer a{color:#d8b4fe}
+@media(max-width:600px){header{padding-top:28px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{border-radius:12px}.body{padding:10px}.title{font-size:14px}.controls{top:0}}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}.hidden{display:none!important}.modal-box{width:min(560px,100%);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:24px;position:relative}.modal-box h2{margin-top:0}.modal-box input{width:100%;margin:12px 0}.modal-actions{display:flex;gap:10px;flex-wrap:wrap}.close{position:absolute;right:14px;top:10px;background:none;border:0;font-size:28px}.small{font-size:12px;color:var(--muted)}
+
+.detail-btn{margin-top:10px;width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--text);cursor:pointer;font-weight:650}
+.detail-btn:hover{border-color:#4a5568}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);z-index:50;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal.hidden{display:none}
+.modal-box{max-width:760px;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 25px 80px rgba(0,0,0,.5)}
+.modal-content{display:grid;grid-template-columns:220px 1fr;gap:24px;padding:24px}
+.modal-poster{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:12px;background:#1a1f28}
+.modal-title{font-size:28px;margin:0 0 8px}.modal-meta{color:var(--muted);margin-bottom:18px}.modal-desc{line-height:1.65;color:#d8dde7}
+.modal-close{position:absolute;right:20px;top:16px;border:0;background:rgba(0,0,0,.45);color:white;font-size:28px;width:42px;height:42px;border-radius:50%;cursor:pointer}
+@media(max-width:650px){.modal-content{grid-template-columns:100px 1fr;gap:14px;padding:18px}.modal-title{font-size:21px}.modal-desc{font-size:14px}}
+#ratingBox{margin-top:20px}.rating-label{color:var(--muted);font-size:13px;margin-bottom:7px}.rating-star{font-size:30px;color:#555;cursor:pointer;line-height:1;margin-right:3px}.rating-star.selected{color:#ffd43b}.rating-star:hover{color:#ffd43b}
+</style>
+<meta name="ucm-version" content="8"><meta http-equiv="Cache-Control" content="no-cache">
+</head>
+<body>
+<header>
+<h1>Mi UCM</h1>
+<p class="subtitle">Tu recorrido desde <b>Iron Man</b> hasta <b>Avengers: Secret Wars</b>.</p>
+<div class="progress-wrap">
+<div class="progress-top"><span>Progreso</span><span id="progressText">0 / 0 · 0%</span></div>
+<div class="bar"><i id="progressBar"></i></div>
+</div>
+</header>
+<main>
+<div class="controls">
+<input id="search" placeholder="Buscar película o serie…">
+<button data-filter="all" class="active">Todos</button>
+<button data-filter="movie">Películas</button>
+<button data-filter="tv">Series</button>
+<button data-filter="special">Especiales</button>
+<button data-filter="pending">Pendientes</button>
+<button data-filter="watched">Vistos</button>
+<select id="saga"><option value="all">Todas las sagas</option><option value="infinity">Saga del Infinito</option><option value="Entre">Entre sagas</option><option value="multiverse">Saga del Multiverso</option></select>
+</div>
+<div id="app"></div>
+
+<div id="detailModal" class="modal hidden" aria-hidden="true">
+<button class="modal-close" id="modalClose" aria-label="Cerrar">×</button>
+<div class="modal-box">
+<div class="modal-content">
+<img id="modalPoster" class="modal-poster" src="" alt="">
+<div>
+<h2 id="modalTitle" class="modal-title"></h2>
+<div id="modalMeta" class="modal-meta"></div>
+<p id="modalDesc" class="modal-desc"></p>
+<div id="ratingBox"><div class="rating-label">Mi valoración</div><div id="modalRating"></div></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer>
+<p>Las portadas se cargan desde Internet y no se almacenan dentro de esta web. La lista y el progreso se guardan localmente en este navegador.</p>
+
+</footer>
+<script>
+const items = [
+["Saga del Infinito","Fase 1","Iron Man","movie"],["Saga del Infinito","Fase 1","El increíble Hulk","movie"],["Saga del Infinito","Fase 1","Iron Man 2","movie"],["Saga del Infinito","Fase 1","Thor","movie"],["Saga del Infinito","Fase 1","Capitán América: El primer vengador","movie"],["Saga del Infinito","Fase 1","Los Vengadores","movie"],
+["Saga del Infinito","Fase 2","Iron Man 3","movie"],["Saga del Infinito","Fase 2","Thor: El mundo oscuro","movie"],["Saga del Infinito","Fase 2","Capitán América: El soldado de invierno","movie"],["Saga del Infinito","Fase 2","Guardianes de la Galaxia","movie"],["Saga del Infinito","Fase 2","Guardianes de la Galaxia Vol. 2","movie"],["Saga del Infinito","Fase 2","Vengadores: La era de Ultrón","movie"],["Saga del Infinito","Fase 2","Ant-Man","movie"],
+["Saga del Infinito","Fase 3","Capitán América: Civil War","movie"],["Saga del Infinito","Fase 3","Black Panther","movie"],["Saga del Infinito","Fase 3","Spider-Man: Homecoming","movie"],["Saga del Infinito","Fase 3","Doctor Strange","movie"],["Saga del Infinito","Fase 3","Thor: Ragnarok","movie"],["Saga del Infinito","Fase 3","Ant-Man y la Avispa","movie"],["Saga del Infinito","Fase 3","Vengadores: Infinity War","movie"],["Saga del Infinito","Fase 3","Vengadores: Endgame","movie"],["Saga del Infinito","Fase 3","Capitana Marvel","movie"],["Saga del Infinito","Fase 3","Spider-Man: Lejos de casa","movie"],
+["Entre sagas", "Fase 3,5","Daredevil — Temporada 1","tv"],["Entre sagas", "Fase 3,5","Jessica Jones — Temporada 1","tv"],["Entre sagas","Fase 3,5","Daredevil — Temporada 2","tv"],["Entre sagas","Fase 3,5","Luke Cage — Temporada 1","tv"],["Entre sagas","Fase 3,5","Iron Fist — Temporada 1","tv"],["Entre sagas","Fase 3,5","The Defenders — Temporada 1","tv"],["Entre sagas","Fase 3,5","The Punisher — Temporada 1","tv"],["Entre sagas","Fase 3,5","Jessica Jones — Temporada 2","tv"],["Entre sagas","Fase 3,5","Luke Cage — Temporada 2","tv"],["Entre sagas","Fase 3,5","Iron Fist — Temporada 2","tv"],["Entre sagas","Fase 3,5","Daredevil — Temporada 3","tv"],["Entre sagas","Fase 3,5","The Punisher — Temporada 2","tv"],["Entre sagas","Fase 3,5","Jessica Jones — Temporada 3","tv"],
+["Saga del Multiverso","Fase 4","WandaVision","tv"],["Saga del Multiverso","Fase 4","Falcon y el Soldado de Invierno","tv"],["Saga del Multiverso","Fase 4","Loki — Temporada 1","tv"],["Saga del Multiverso","Fase 4","What If...? — Temporada 1","tv"],["Saga del Multiverso","Fase 4","Shang-Chi y la leyenda de los Diez Anillos","movie"],["Saga del Multiverso","Fase 4","Eternals","movie"],["Saga del Multiverso","Fase 4","Spider-Man: No Way Home","movie"],["Saga del Multiverso","Fase 4","Hawkeye","tv"],["Saga del Multiverso","Fase 4","Moon Knight","tv"],["Saga del Multiverso","Fase 4","Doctor Strange en el multiverso de la locura","movie"],["Saga del Multiverso","Fase 4","Ms. Marvel","tv"],["Saga del Multiverso","Fase 4","Thor: Love and Thunder","movie"],["Saga del Multiverso","Fase 4","She-Hulk: Abogada Hulka","tv"],["Saga del Multiverso","Fase 4","Black Panther: Wakanda Forever","movie"],["Saga del Multiverso","Fase 4","Werewolf by Night","special",true],["Saga del Multiverso","Fase 4","Guardianes de la Galaxia: Especial Felices Fiestas","special",true],
+["Saga del Multiverso","Fase 5","Ant-Man y la Avispa: Quantumanía","movie"],["Saga del Multiverso","Fase 5","Guardianes de la Galaxia Vol. 3","movie"],["Saga del Multiverso","Fase 5","Secret Invasion","tv"],["Saga del Multiverso","Fase 5","Loki — Temporada 2","tv"],["Saga del Multiverso","Fase 5","The Marvels","movie"],["Saga del Multiverso","Fase 5","What If...? — Temporada 2","tv"],["Saga del Multiverso","Fase 5","Echo","tv"],["Saga del Multiverso","Fase 5","Deadpool & Wolverine","movie"],["Saga del Multiverso","Fase 5","Agatha, ¿quién si no?","tv"],["Saga del Multiverso","Fase 5","What If...? — Temporada 3","tv"],["Saga del Multiverso","Fase 5","Daredevil: Born Again — Temporada 1","tv"],["Saga del Multiverso","Fase 5","Capitán América: Brave New World","movie"],["Saga del Multiverso","Fase 5","Thunderbolts*","movie"],["Saga del Multiverso","Fase 5","The Fantastic Four: First Steps","movie"],["Saga del Multiverso","Fase 5","Ironheart","tv"],["Saga del Multiverso","Fase 5","Marvel Zombies","tv",true],
+["Saga del Multiverso","Fase 6","Wonder Man — Temporada 1","tv"],["Saga del Multiverso","Fase 6","Daredevil: Born Again — Temporada 2","tv"],["Saga del Multiverso","Fase 6","The Punisher: One Last Kill","special"],["Saga del Multiverso","Fase 6","Spider-Man: Brand New Day","movie"],["Saga del Multiverso","Fase 6","VisionQuest","tv"],["Saga del Multiverso","Fase 6","Avengers: Doomsday","movie"],["Saga del Multiverso","Fase 6","Avengers: Secret Wars","movie"]
+];
+
+let watched = JSON.parse(localStorage.getItem("ucm-watched") || "{}");
+let ratings = JSON.parse(localStorage.getItem("ucm-ratings") || "{}");
+let filter="all", query="", saga="all";
+
+function typeName(t){return t==="movie"?"Película":t==="tv"?"Serie":"Especial"}
+
+const imdbIds = {"Iron Man": "tt0371746", "El increíble Hulk": "tt0800080", "Iron Man 2": "tt1228705", "Thor": "tt0800369", "Capitán América: El primer vengador": "tt0458339", "Los Vengadores": "tt0848228", "Iron Man 3": "tt1300854", "Thor: El mundo oscuro": "tt1981115", "Capitán América: El soldado de invierno": "tt1843866", "Guardianes de la Galaxia": "tt2015381", "Guardianes de la Galaxia Vol. 2": "tt3896198", "Vengadores: La era de Ultrón": "tt2395427", "Ant-Man": "tt0478970", "Capitán América: Civil War": "tt3498820", "Black Panther": "tt1825683", "Spider-Man: Homecoming": "tt2250912", "Doctor Strange": "tt1211837", "Thor: Ragnarok": "tt3501632", "Ant-Man y la Avispa": "tt5095030", "Vengadores: Infinity War": "tt4154756", "Vengadores: Endgame": "tt4154796", "Capitana Marvel": "tt4154664", "Spider-Man: Lejos de casa": "tt6320628", "WandaVision": "tt9140560", "Falcon y el Soldado de Invierno": "tt9208876", "Loki — Temporada 1": "tt9140554", "What If...? — Temporada 1": "tt10168312", "Shang-Chi y la leyenda de los Diez Anillos": "tt9376612", "Eternals": "tt9032400", "Spider-Man: No Way Home": "tt10872600", "Hawkeye": "tt10160804", "Moon Knight": "tt10234724", "Doctor Strange en el multiverso de la locura": "tt9419884", "Ms. Marvel": "tt10857164", "Thor: Love and Thunder": "tt10648342", "She-Hulk: Abogada Hulka": "tt10857160", "Black Panther: Wakanda Forever": "tt9114286", "Werewolf by Night": "https://static.wikia.nocookie.net/disney/images/e/e3/Werewolf_by_Night_Official_Poster.jpg/revision/latest/scale-to-width-down/1000?cb=20220911193403", "Guardianes de la Galaxia: Especial Felices Fiestas": "tt19813722", "Ant-Man y la Avispa: Quantumanía": "tt10954600", "Guardianes de la Galaxia Vol. 3": "tt6791350", "Secret Invasion": "tt13157618", "Loki — Temporada 2": "tt9140554", "The Marvels": "tt10676048", "What If...? — Temporada 2": "tt10168312", "Echo": "tt13966962", "Deadpool & Wolverine": "tt6263850", "Agatha, ¿quién si no?": "tt15571732", "What If...? — Temporada 3": "tt10168312", "Daredevil: Born Again — Temporada 1": "tt18923754", "Capitán América: Brave New World": "tt14513804", "Thunderbolts*": "tt20969586", "The Fantastic Four: First Steps": "tt10676052", "Ironheart": "tt13623126", "Marvel Zombies": "tt31873314", "Daredevil: Born Again — Temporada 2": "tt18923754", "The Punisher: One Last Kill": "tt5675620", "Spider-Man: Brand New Day": "tt22041854", "VisionQuest": "https://m.media-amazon.com/images/M/MV5BZGZkNThlYjYtOGI0MS00NGY2LTgwZTAtZWYwZTFlNTcxZDFhXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg", "Avengers: Doomsday": "tt21357150", "Avengers: Secret Wars": "tt21361444", "Daredevil — Temporada 1": "tt3322312", "Daredevil — Temporada 2": "tt3322312", "Daredevil — Temporada 3": "tt3322312", "Jessica Jones — Temporada 1": "tt2357547", "Jessica Jones — Temporada 2": "tt2357547", "Jessica Jones — Temporada 3": "tt2357547", "Luke Cage — Temporada 1": "tt3322314", "Luke Cage — Temporada 2": "tt3322314", "Iron Fist — Temporada 1": "tt3322316", "Iron Fist — Temporada 2": "tt3322316", "The Defenders — Temporada 1": "tt4230078", "The Punisher — Temporada 1": "tt5675620", "The Punisher — Temporada 2": "tt5675620"};
+const descriptions = {"Iron Man": "Tony Stark, un brillante industrialista y fabricante de armas, construye una armadura de alta tecnología y se convierte en Iron Man tras ser secuestrado y herido.", "El increíble Hulk": "Bruce Banner busca una forma de controlar la transformación que lo convierte en Hulk mientras intenta escapar de quienes quieren utilizar su poder.", "Iron Man 2": "Tony Stark afronta las consecuencias de revelar que es Iron Man mientras aparecen nuevos enemigos y se cuestiona el legado de su tecnología.", "Thor": "Thor es desterrado a la Tierra y debe aprender humildad antes de poder recuperar sus poderes y demostrar que merece ser un héroe.", "Capitán América: El primer vengador": "Steve Rogers se convierte en el supersoldado Capitán América y lucha contra Hydra durante la Segunda Guerra Mundial.", "Los Vengadores": "Los héroes más poderosos de la Tierra deben unir fuerzas cuando Loki amenaza Nueva York con un ejército alienígena.", "Iron Man 3": "Tras los acontecimientos de Nueva York, Tony Stark sufre las secuelas de la batalla y se enfrenta al misterioso Mandarín.", "Thor: El mundo oscuro": "Thor debe enfrentarse a los Elfos Oscuros y a una antigua amenaza que pretende sumir el universo en oscuridad.", "Capitán América: El soldado de invierno": "Steve Rogers descubre que una conspiración amenaza a S.H.I.E.L.D. y debe enfrentarse a un misterioso asesino conocido como el Soldado de Invierno.", "Guardianes de la Galaxia": "Peter Quill acaba formando un equipo de inadaptados para proteger una poderosa esfera de Ronan y salvar la galaxia.", "Guardianes de la Galaxia Vol. 2": "Los Guardianes descubren secretos sobre el origen de Peter Quill mientras se enfrentan a nuevas amenazas y fortalecen sus vínculos.", "Vengadores: La era de Ultrón": "Tony Stark crea una inteligencia artificial que se vuelve contra la humanidad y obliga a los Vengadores a luchar contra Ultrón.", "Ant-Man": "Scott Lang se convierte en Ant-Man y aprende a utilizar un traje capaz de cambiar su tamaño para ejecutar un arriesgado robo.", "Daredevil — Temporada 1": "Matt Murdock, abogado de día y vigilante de noche, protege Hell's Kitchen mientras se enfrenta al poderoso Wilson Fisk.", "Jessica Jones — Temporada 1": "Jessica Jones intenta reconstruir su vida mientras vuelve a enfrentarse al hombre que controló su mente y la traumatizó.", "Daredevil — Temporada 2": "Daredevil se cruza con Punisher y Elektra mientras una nueva amenaza pone a prueba sus límites y su sentido de la justicia.", "Luke Cage — Temporada 1": "Luke Cage, con una piel prácticamente indestructible, intenta proteger Harlem mientras su pasado vuelve a perseguirlo.", "Iron Fist — Temporada 1": "Danny Rand regresa a Nueva York tras años de entrenamiento y reclama su legado como Iron Fist mientras descubre una conspiración criminal.", "The Defenders — Temporada 1": "Daredevil, Jessica Jones, Luke Cage e Iron Fist unen fuerzas para enfrentarse a una amenaza común que opera desde las sombras.", "The Punisher — Temporada 1": "Frank Castle inicia una brutal búsqueda de venganza y descubre una conspiración mucho mayor detrás de la muerte de su familia.", "Capitán América: Civil War": "Los Vengadores se dividen por el debate sobre el control gubernamental de los superhéroes, enfrentando a Steve Rogers y Tony Stark.", "Black Panther": "T'Challa regresa a Wakanda para ocupar el trono y debe enfrentarse a un rival que desafía su derecho a gobernar.", "Spider-Man: Homecoming": "Peter Parker intenta compaginar su vida escolar con su nueva responsabilidad como Spider-Man mientras se enfrenta al Buitre.", "Doctor Strange": "El arrogante cirujano Stephen Strange descubre las artes místicas y aprende a proteger la Tierra de amenazas sobrenaturales.", "Jessica Jones — Temporada 2": "Jessica intenta descubrir la verdad sobre sus poderes y su pasado mientras se enfrenta a nuevos peligros personales.", "Luke Cage — Temporada 2": "Luke lucha por mantener la paz en Harlem cuando aparece una nueva amenaza que pone en peligro todo lo que ha construido.", "Iron Fist — Temporada 2": "Danny Rand intenta asumir plenamente su papel de protector mientras una guerra criminal amenaza Nueva York.", "Daredevil — Temporada 3": "Tras quedar destrozado física y emocionalmente, Matt Murdock regresa como Daredevil mientras Wilson Fisk vuelve a mover los hilos.", "Thor: Ragnarok": "Thor debe escapar de Sakaar y detener el Ragnarok antes de que Hela destruya Asgard.", "The Punisher — Temporada 2": "Frank Castle intenta comenzar una nueva vida, pero una joven en peligro lo obliga a regresar a la violencia.", "Jessica Jones — Temporada 3": "Jessica se enfrenta a un nuevo enemigo mientras intenta demostrar que puede ser una heroína y proteger a quienes la rodean.", "Ant-Man y la Avispa": "Scott Lang trabaja junto a Hope van Dyne para rescatar a Janet van Dyne del Reino Cuántico.", "Vengadores: Infinity War": "Thanos inicia su búsqueda de las Gemas del Infinito y los héroes de la Tierra deben intentar detenerlo antes de que sea demasiado tarde.", "Vengadores: Endgame": "Los Vengadores supervivientes intentan revertir el desastre causado por Thanos y recuperar a quienes perdieron.", "Capitana Marvel": "Carol Danvers descubre su verdadero pasado y sus extraordinarios poderes en medio de un conflicto entre dos razas alienígenas.", "Spider-Man: Lejos de casa": "Peter Parker viaja por Europa buscando unas vacaciones normales, pero Nick Fury lo recluta para enfrentarse a una nueva amenaza.", "WandaVision": "Wanda Maximoff crea una realidad aparentemente perfecta que oculta un doloroso misterio y afecta a todo un pueblo.", "Falcon y el Soldado de Invierno": "Sam Wilson y Bucky Barnes unen fuerzas para enfrentarse a una nueva amenaza mientras se debate quién debe llevar el escudo del Capitán América.", "Loki — Temporada 1": "Una versión alternativa de Loki escapa con el Teseracto y acaba atrapada en una organización que protege la línea temporal.", "What If...? — Temporada 1": "La serie explora universos alternativos en los que acontecimientos conocidos del MCU suceden de formas completamente distintas.", "Shang-Chi y la leyenda de los Diez Anillos": "Shang-Chi se ve obligado a enfrentarse al pasado de su familia y a la organización de los Diez Anillos.", "Eternals": "Un grupo de seres inmortales regresa a la acción para proteger la Tierra frente a una amenaza que lleva miles de años gestándose.", "Spider-Man: No Way Home": "Peter Parker pide ayuda a Doctor Strange para recuperar su identidad secreta, pero el hechizo abre la puerta al multiverso.", "Hawkeye": "Clint Barton intenta pasar la Navidad con su familia mientras Kate Bishop se convierte en su inesperada compañera.", "Moon Knight": "Steven Grant descubre que comparte cuerpo con un mercenario llamado Marc Spector y queda atrapado en un conflicto ligado a dioses egipcios.", "Doctor Strange en el multiverso de la locura": "Doctor Strange atraviesa diferentes realidades para proteger a América Chávez mientras el multiverso se desestabiliza.", "Ms. Marvel": "Kamala Khan descubre que posee poderes y comienza a construir su propia identidad como superheroína.", "Thor: Love and Thunder": "Thor se reencuentra con Jane Foster, ahora convertida en Mighty Thor, mientras ambos se enfrentan a Gorr.", "She-Hulk: Abogada Hulka": "Jennifer Walters descubre que puede transformarse en She-Hulk y debe compaginar su carrera como abogada con su nueva vida superheroica.", "Black Panther: Wakanda Forever": "Wakanda afronta la pérdida de T'Challa mientras una nueva amenaza procedente del océano pone al reino en peligro.", "Werewolf by Night": "Un grupo de cazadores de monstruos se reúne para competir por una poderosa reliquia, pero la noche toma un giro inesperado.", "Guardianes de la Galaxia: Especial Felices Fiestas": "Mantis y Drax viajan a la Tierra para encontrar el regalo perfecto para Peter Quill en una aventura navideña de los Guardianes. citeturn0search0turn0search3", "Ant-Man y la Avispa: Quantumanía": "Scott Lang y su familia quedan atrapados en el Reino Cuántico, donde descubren un mundo enorme y se enfrentan a Kang.", "Guardianes de la Galaxia Vol. 3": "Los Guardianes se embarcan en una misión para salvar a Rocket y terminan enfrentándose al creador que marcó su pasado.", "Secret Invasion": "Nick Fury regresa a la Tierra cuando descubre que los Skrulls se han infiltrado en posiciones de poder.", "Loki — Temporada 2": "Loki intenta reparar las consecuencias de la fractura temporal mientras lucha por evitar el colapso de las líneas temporales.", "The Marvels": "Carol Danvers, Kamala Khan y Monica Rambeau quedan conectadas de forma misteriosa y deben aprender a trabajar juntas.", "What If...? — Temporada 2": "El Vigilante continúa explorando nuevas realidades alternativas del multiverso Marvel.", "Echo": "Maya Lopez regresa a su tierra natal mientras afronta su pasado y las consecuencias de sus acciones.", "Deadpool & Wolverine": "Deadpool se embarca en una misión que lo lleva a cruzarse con Wolverine y con las consecuencias del multiverso.", "Agatha, ¿quién si no?": "Agatha Harkness intenta recuperar sus poderes y emprende un peligroso viaje por el Camino de las Brujas.", "What If...? — Temporada 3": "Nuevas historias alternativas muestran posibilidades inesperadas para distintos héroes y mundos del multiverso.", "Daredevil: Born Again — Temporada 1": "Matt Murdock retoma su lucha como Daredevil mientras Wilson Fisk intenta transformar su poder criminal en influencia política.", "Capitán América: Brave New World": "Sam Wilson asume plenamente el manto del Capitán América y se ve envuelto en una crisis internacional.", "Thunderbolts*": "Un grupo de antihéroes y personajes moralmente ambiguos se ve obligado a trabajar unido en una misión peligrosa.", "The Fantastic Four: First Steps": "Los Cuatro Fantásticos entran en acción para proteger su mundo frente a una amenaza de escala cósmica.", "Ironheart": "Riri Williams continúa desarrollando su propia armadura y se enfrenta a fuerzas que ponen a prueba su talento y sus convicciones.", "Marvel Zombies": "Una nueva generación de héroes intenta sobrevivir en un universo devastado por un brote zombi que se extiende por el mundo. citeturn0search10", "Wonder Man — Temporada 1": "Simon Williams, un actor de Hollywood, adquiere poderes y se ve obligado a combinar su carrera con su nueva identidad como Wonder Man. citeturn0search5turn0search9", "Daredevil: Born Again — Temporada 2": "Matt Murdock continúa su lucha como Daredevil mientras la guerra por el control de Nueva York se intensifica.", "The Punisher: One Last Kill": "Frank Castle regresa para una última misión que lo enfrenta de nuevo a la violencia y a su pasado.", "Spider-Man: Brand New Day": "Peter Parker continúa su vida como Spider-Man mientras afronta una nueva etapa y una amenaza todavía por descubrir.", "VisionQuest": "Vision intenta recuperar su memoria y su humanidad después de los acontecimientos de WandaVision. citeturn0search2turn0search4", "Avengers: Doomsday": "Los Vengadores se reúnen ante una amenaza de escala multiversal que puede cambiar el destino del universo.", "Avengers: Secret Wars": "La batalla definitiva del multiverso lleva a los héroes a un conflicto que puede decidir el futuro de múltiples realidades."};
+function posterFallback(title){
+  return "https://placehold.co/400x600/171c26/f5f7fb?text="+encodeURIComponent(title.replace(" — ","\\n"));
+}
+const localPosters = {"Iron Fist — Temporada 1": "iron-fist-temporada-1.webp", "Iron Fist — Temporada 2": "iron-fist-temporada-2.webp", "Guardianes de la Galaxia: Especial Felices Fiestas": "guardianes-especial-felices-fiestas.jpg", "Marvel Zombies": "marvel-zombies.jpg", "Wonder Man — Temporada 1": "wonder-man-temporada-1.webp", "Spider-Man: Brand New Day": "spider-man-brand-new-day.webp", "The Defenders — Temporada 1": "the-defenders-temporada-1.webp"};
+const posters = {"Iron Fist — Temporada 1": "https://static.wikia.nocookie.net/marvelcinematicuniverse/images/3/3f/Iron_Fist_-_Poster_del_personaje_1.png/revision/latest?cb=20170302123417&path-prefix=es", "Iron Fist — Temporada 2": "https://static.wikia.nocookie.net/marvelcinematicuniverse/images/3/3f/Iron_Fist_-_Poster_del_personaje_1.png/revision/latest?cb=20170302123417&path-prefix=es", "Guardianes de la Galaxia: Especial Felices Fiestas": "https://pics.filmaffinity.com/the_guardians_of_the_galaxy_holiday_special-774992257-large.jpg", "Marvel Zombies": "https://m.media-amazon.com/images/M/MV5BNGNkYjI3ZWUtN2MzMS00NDg5LWE5MmYtZGE4Zjc0OGVhODM4XkEyXkFqcGc@._V1_.jpg", "Wonder Man — Temporada 1": "https://static.wikia.nocookie.net/marvelcinematicuniverse/images/2/2d/Wonder_Man_-_Primera_temporada_-_Póster_2.png/revision/latest?cb=20260102190535&path-prefix=es", "VisionQuest": "https://www.reddit.com/media?url=https%3A%2F%2Fpreview.redd.it%2Fwhat-do-you-guy-want-to-see-in-vision-quest-poster-by-me-v0-9w9wfpirbpeb1.jpg%3Fwidth%3D1080%26crop%3Dsmart%26auto%3Dwebp%26s%3Dc3b09a5fd8c58a7ac207fa9fcf166e68c5278c70", "Spider-Man: Brand New Day": "https://static.wikia.nocookie.net/marvelcinematicuniverse/images/c/ca/Spider-Man_Brand_New_Day_-_Primer_Poster.png/revision/latest?cb=20260530125556&path-prefix=es", "The Defenders — Temporada 1": "https://static.wikia.nocookie.net/marvelcinematicuniverse/images/e/e9/The_Defenders_-_Segundo_Póster_2017.png/revision/latest?cb=20170813025456&path-prefix=es", "Werewolf by Night": "https://www.imdb.com/es/title/tt15318872/mediaviewer/rm439684353/?ref_=tt_ov_i"};
+function posterUrl(title){
+  if (posters[title]) return posters[title];
+  const id=imdbIds[title];
+  return id && !id.includes("?") ? "https://images.metahub.space/poster/medium/"+id+"/img" : "";
+}
+function getPoster(title, type, img){
+  const u=posterUrl(title);
+  img.onerror=()=>{img.onerror=null; img.src=posterFallback(title);};
+  img.src=u || posterFallback(title);
+}
+function openDetails(i){
+ const [sg,ph,title,type,opt]=items[i];
+ const modal=document.getElementById("detailModal");
+ const poster=document.getElementById("modalPoster");
+ poster.src=posterUrl(title)||posterFallback(title);
+ poster.onerror=()=>{poster.onerror=null;poster.src=posterFallback(title)};
+ document.getElementById("modalTitle").textContent=title;
+ document.getElementById("modalMeta").textContent=sg+" · "+ph+" · "+typeName(type)+(opt?" · Opcional":"");
+ document.getElementById("modalDesc").textContent=descriptions[title]||"En esta historia, el personaje se enfrenta a una nueva amenaza dentro del Universo Cinematográfico de Marvel.";
+  const ratingEl=document.getElementById("modalRating");
+  const currentRating=ratings[title]||0;
+  ratingEl.innerHTML=[1,2,3,4,5].map(n=>`<span class="rating-star ${n<=currentRating?"selected":""}" data-rating="${n}">★</span>`).join("");
+  ratingEl.querySelectorAll(".rating-star").forEach(star=>{
+    star.addEventListener("click",()=>{
+      ratings[title]=Number(star.dataset.rating);
+      localStorage.setItem("ucm-ratings",JSON.stringify(ratings));
+      openDetails(i);
+    });
+  });
+ modal.classList.remove("hidden"); modal.setAttribute("aria-hidden","false");
+}
+const detailModal=document.getElementById("detailModal");
+document.getElementById("modalClose").addEventListener("click",()=>{detailModal.classList.add("hidden");detailModal.setAttribute("aria-hidden","true")});
+detailModal.addEventListener("click",e=>{if(e.target===detailModal){detailModal.classList.add("hidden");detailModal.setAttribute("aria-hidden","true")}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")detailModal.classList.add("hidden")});
+
+function render(){
+ const app=document.getElementById("app"); app.innerHTML="";
+ const groups={};
+ items.forEach((x,i)=>{
+   const [sg,ph,title,type,opt]=x, isWatched=!!watched[i];
+   const okSearch=title.toLowerCase().includes(query.toLowerCase());
+   const okSaga=saga==="all" || (saga==="infinity"&&sg==="Saga del Infinito") || (saga==="Entre"&&sg==="Entre sagas") || (saga==="multiverse"&&sg==="Saga del Multiverso");
+   const okFilter=filter==="all" || filter===type || (filter==="watched"&&isWatched) || (filter==="pending"&&!isWatched);
+   if(okSearch&&okSaga&&okFilter){(groups[sg]??={})[ph]??=[];groups[sg][ph].push([i,...x]);}
+ });
+ Object.entries(groups).forEach(([sg,phases])=>{
+   const sagaEl=document.createElement("section"); sagaEl.className="saga";
+   sagaEl.innerHTML=`<h2>${sg}</h2><p>${sg==="Saga del Infinito"?"Fases 1–3":"Fases 4–6"}</p>`;
+   Object.entries(phases).forEach(([ph,arr])=>{
+     const sec=document.createElement("div");sec.className="phase";sec.innerHTML=`<h3>${ph}</h3><div class="grid"></div>`;
+     const grid=sec.querySelector(".grid");
+     arr.forEach(([i,sg,ph,title,type,opt])=>{
+       const card=document.createElement("article");card.className="card";
+       card.innerHTML=`<img class="poster" loading="lazy" src="${posterUrl(title)}" alt="Portada de ${title}" onerror="this.onerror=null;this.src=posterFallback(title)">
+       <div class="body"><div class="num">#${i+1}</div><div class="title">${title}</div><div class="meta">${typeName(type)}</div>${opt?'<span class="optional">Opcional</span>':''}
+       <label class="check"><input type="checkbox" ${watched[i]?"checked":""}> Vista</label>
+       <button class="detail-btn" type="button">Ver descripción</button></div>`;
+       card.querySelector("input").addEventListener("change",e=>{watched[i]=e.target.checked;localStorage.setItem("ucm-watched",JSON.stringify(watched));updateProgress();});
+       const poster=card.querySelector(".poster"); getPoster(title, type, poster);
+       card.querySelector(".detail-btn").addEventListener("click",()=>openDetails(i));
+       grid.appendChild(card);
+     });
+     sagaEl.appendChild(sec);
+   });
+   app.appendChild(sagaEl);
+ });
+ if(!app.children.length) app.innerHTML='<div class="empty">No hay resultados con estos filtros.</div>';
+ updateProgress();
+}
+function updateProgress(){
+ const total=items.length, count=Object.values(watched).filter(Boolean).length, pct=Math.round(count/total*100);
+ document.getElementById("progressText").textContent=`${count} / ${total} · ${pct}%`;
+ document.getElementById("progressBar").style.width=pct+"%";
+}
+document.getElementById("search").addEventListener("input",e=>{query=e.target.value;render()});
+document.getElementById("saga").addEventListener("change",e=>{saga=e.target.value;render()});
+document.querySelectorAll("[data-filter]").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll("[data-filter]").forEach(x=>x.classList.remove("active"));b.classList.add("active");filter=b.dataset.filter;render()}));
+render();
+</script>
+</body></html>
